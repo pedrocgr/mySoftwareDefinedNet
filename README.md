@@ -1,48 +1,50 @@
-# Projeto SDN — Redes Definidas por Software (Exercício)
+# SDN Project - Software Defined Networking
 
-Objetivo
--------
-Este projeto tem como objetivo proporcionar uma experiência prática com o paradigma
-de Redes Definidas por Software (SDN). O desenvolvimento será incremental e dividido
-em fases; na fase 1 construiremos a infraestrutura (topologia) com Mininet e um
-controlador centralizado (Ryu) usando OpenFlow 1.3.
+Goal
+- Learn SDN incrementally using Mininet + OpenFlow 1.3 + Ryu.
 
-Ferramentas recomendadas
-- Mininet (Ubuntu/Linux)
-- Ryu Controller (Python)
-- OpenFlow 1.3
-- Wireshark (opcional)
+Main files
+- topology.py (Mininet topology)
+- empty_controller.py (empty Ryu controller)
+- setup_env.sh (basic network dependencies on Ubuntu)
 
-Estrutura inicial criada
-- `README.md` — este arquivo
-- `setup_env.sh` — script para instalar dependências (Ubuntu/Debian)
-- `requirements.txt` — dependências Python (Ryu)
-- `topology.py` — script Mininet de exemplo (OpenFlow 1.3)
+Basic requirement
+- Linux with Mininet installed
 
-Começando (rápido)
-------------------
-1. Torne o script executável e execute (requer `sudo`):
-
+Quick setup (Ubuntu)
 ```bash
 sudo bash setup_env.sh
 ```
 
-2. Em um terminal, inicie o controlador Ryu (exemplo com app simples OpenFlow1.3):
+Ryu via Docker (recommended)
+- Avoids Python conflicts on the host.
 
+Terminal 1 - Empty Ryu controller
 ```bash
-ryu-manager ryu.app.simple_switch_13
+sudo docker run --rm --net=host -v "$PWD:/app" -w /app -e PYTHONPATH=/app osrg/ryu ryu-manager empty_controller
 ```
 
-3. Em outro terminal, execute a topologia Mininet:
-
+Phase 1 - Topology without controller
 ```bash
 sudo python3 topology.py
 ```
+In the Mininet prompt:
+```bash
+pingall
+```
+Expected: 100% loss (no flow rules on switches).
 
-Observações
-- O `setup_env.sh` tenta instalar pacotes via `apt` e `pip3` em distribuições Debian/Ubuntu.
-- Mininet e Ryu tipicamente exigem privilégios de root para emulação de rede.
-- Edite `topology.py` para ajustar a topologia conforme as instruções da fase seguinte.
+Phase 2 - Topology with remote controller
+```bash
+sudo python3 topology.py --with-controller --ctrl-ip 127.0.0.1 --ctrl-port 6633
+```
+In the Mininet prompt:
+```bash
+dump
+pingall
+```
+Expected: 100% loss, but Ryu logs the switches handshake.
 
-Próximo passo
-- Implementar a topologia específica solicitada e documentar o procedimento de teste.
+Tips
+- The sch_htb/quantum warning when using 100 Mbps is normal and does not affect validation.
+- If Ryu does not start on the host, use the Docker command above.
