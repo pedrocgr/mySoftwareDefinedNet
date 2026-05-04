@@ -20,7 +20,7 @@ sudo bash setup_env.sh
 Ryu via Docker (recommended)
 - Avoids Python conflicts on the host.
 
-Phase 1 - Topology without controller
+# Phase 1 - Topology without controller
 ```bash
 sudo python3 topology.py
 ```
@@ -30,7 +30,7 @@ pingall
 ```
 Expected: 100% loss (no flow rules on switches).
 
-Phase 2 - Topology with empty controller
+# Phase 2 - Topology with empty controller
 
 Terminal 1 - Empty Ryu controller
 ```bash
@@ -49,7 +49,7 @@ pingall
 ```
 Expected: 100% loss, but Ryu logs the switches handshake.
 
-Phase 3 - MAC learning (simple_switch_13)
+# Phase 3 - MAC learning (simple_switch_13)
 
 Terminal 1 - Ryu MAC learning switch
 ```bash
